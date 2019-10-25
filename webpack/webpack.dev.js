@@ -1,4 +1,3 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
@@ -7,6 +6,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"]
   },
   mode: 'development',
+  devtool: "inline-source-map",
   entry: './example/index.tsx',
   module: {
     rules: [

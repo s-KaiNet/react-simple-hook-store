@@ -70,3 +70,5 @@ export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions
     store,
   };
 };
+
+export * from "./types";

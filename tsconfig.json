@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "strict": false, 
-    "noImplicitAny": true, 
-    "noImplicitThis": true, 
+    "strict": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "alwaysStrict": true,
     "strictNullChecks": false,
     "target": "es5",
+    "sourceMap": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

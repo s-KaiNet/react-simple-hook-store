@@ -1,6 +1,7 @@
 {
     "extends": ["tslint:latest", "tslint-react"],
     "rules": {
+      "no-implicit-dependencies": [true, "dev"],
       "no-object-literal-type-assertion": [false],
       "ordered-imports": [false],
       "ban": [
