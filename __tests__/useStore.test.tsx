@@ -1,26 +1,56 @@
-import React, { useState } from "react";
-import { shallow, mount } from "enzyme";
-import { act } from "react-dom/test-utils";
-import { createStore } from "../src";
+// tslint:disable: jsx-no-lambda
+import React from "react";
+import { mount } from "enzyme";
+import { createStore, StoreActions } from "../src";
 
 describe("useStore", () => {
-    const { useStore } = createStore("store", {});
 
-    test("Renders valid text", (done) => {
+    it("Should throw when a primitive used as store value", () => {
+        const value = "my store value";
+        expect(() => {
+            createStore(value, {});
+        }).toThrow();
+    });
 
-        const HelloWorld = () => {
-          const [name] = useStore();
+    it("Should re-render with valid number when state is a primitive", (done) => {
+        interface IActions {
+            increment: () => void;
+        }
 
-          return (
-            <div>Hello, {name}!</div>
-          );
+        interface IState {
+            counter: number;
+        }
+
+        const actions: StoreActions<IState, IActions> = {
+            increment: (store) => {
+                store.setState({
+                    counter: store.state.counter + 1,
+                });
+            },
         };
 
-        const rendered = mount(<HelloWorld />);
+        const { useStore } = createStore({
+            counter: 0,
+        }, actions);
+        const Component = () => {
+            const [counter, increment] = useStore((s) => s.counter, (a) => a.increment);
+
+            return (
+                <button onClick={() => increment()}>
+                    {counter}
+                </button>
+            );
+        };
+
+        const rendered = mount(<Component />);
 
         requestAnimationFrame(() => {
-          expect(rendered.text()).toBe("Hello, store!");
-          done();
+            expect(rendered.text()).toBe("0");
+            rendered.find("button").simulate("click");
+            expect(rendered.text()).toBe("1");
+            rendered.find("button").simulate("click");
+            expect(rendered.text()).toBe("2");
+            done();
         });
-      });
+    });
 });

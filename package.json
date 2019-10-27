@@ -57,6 +57,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@types/react": "^16.9.11"
+    "@types/react": "^16.9.11",
+    "utility-types": "^3.8.0"
   }
 }

@@ -2,6 +2,9 @@ const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const path = require('path');
 
 module.exports = {
+  resolve: {
+    extensions: [".ts", ".tsx", ".js"]
+  },
   entry: './src/index.ts',
   output: {
     filename: 'react-simple-hook-store.js',

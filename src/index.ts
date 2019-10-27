@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { IStore, IListener, MethodsMap, AddStoreParameter, UseStoreReturn } from "./types";
+import { IStore, IListener, MethodsMap, StoreActions, UseStoreReturn } from "./types";
+import { DeepReadonly } from "utility-types";
 
 function setState<S, A>(store: IStore<S, A>, newState: Partial<S>) {
   store.state = { ...store.state, ...newState };
@@ -8,7 +9,10 @@ function setState<S, A>(store: IStore<S, A>, newState: Partial<S>) {
   });
 }
 
-function useStore<S, A>(store: IStore<S, A>, mapState: (state: S) => any, mapActions: (actions: A) => any) {
+function useStore<S, A>(
+  store: IStore<S, A>,
+  mapState: (state: DeepReadonly<S>) => any,
+  mapActions: (actions: A) => any) {
   const state = mapState ? mapState(store.state) : store.state;
   const actions = useMemo(
     () => (mapActions ? mapActions(store.actions) : store.actions),
@@ -40,7 +44,7 @@ function useStore<S, A>(store: IStore<S, A>, mapState: (state: S) => any, mapAct
   return [state, actions];
 }
 
-function associateActions<S, A extends MethodsMap<A>>(store: IStore<S, A>, actions: AddStoreParameter<S, A>) {
+function associateActions<S, A extends MethodsMap<A>>(store: IStore<S, A>, actions: StoreActions<S, A>) {
   const result: MethodsMap<any> = {};
 
   Object.keys(actions).forEach((key) => {
@@ -49,14 +53,16 @@ function associateActions<S, A extends MethodsMap<A>>(store: IStore<S, A>, actio
       result[key] = action.bind(null, store);
     }
     if (typeof actions[key as keyof A] === "object") {
-      // const res = actions[key as keyof A] as Record<keyof A[P], (store: IStore<S, A>, ...p: any) => any>;
       result[key] = associateActions(store as any, actions[key as keyof A] as any);
     }
   });
   return result as A;
 }
 
-export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions: AddStoreParameter<S, A>) => {
+export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions: StoreActions<S, A>) => {
+  if (typeof initialState !== "object") {
+    throw new Error("Only objects are supported as state, e.g. { counter: 0 }");
+  }
   const store: IStore<S, A> = {
     state: initialState,
     listeners: [],

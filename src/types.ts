@@ -1,27 +1,29 @@
+import { DeepReadonly } from "utility-types";
+
 export interface IListener<T> {
     oldState: Partial<T>;
     run: (newState: any) => void;
 }
 
 export interface IStore<S, A> {
-    state: S;
+    state: DeepReadonly<S>;
     setState: (newState: Partial<S>) => void;
     actions: A;
     listeners: Array<IListener<S>>;
 }
 
-export type AddStoreParameter<S, A> = {
+export type StoreActions<S, A> = {
     [P in keyof A]: A[P] extends (...p: infer U) => infer R
     ? (store: IStore<S, A>, ...p: U) => R
     : A[P] extends object
-    ? AddStoreParameter<S, A[P]>
+    ? StoreActions<S, A[P]>
     : never;
 };
 
 export type MethodsMap<A> = {
     [P in keyof A]: A[P] extends object
     ? MethodsMap<A[P]>
-    : Record<keyof A, (...payload: any) => void>
+    : (...payload: any) => void
 };
 
 export type UseStoreReturn<S, A> = (() => [S, A]) &
