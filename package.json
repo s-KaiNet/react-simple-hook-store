@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "build": "webpack --progress --config ./webpack/webpack.prod.js",
     "start": "webpack-dev-server --config ./webpack/webpack.dev.js",
@@ -58,6 +59,7 @@
   },
   "dependencies": {
     "@types/react": "^16.9.11",
+    "fast-deep-equal": "^2.0.1",
     "utility-types": "^3.8.0"
   }
 }

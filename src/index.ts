@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { IStore, IListener, MethodsMap, StoreActions, UseStoreReturn } from "./types";
-import { DeepReadonly } from "utility-types";
+import { IStoreInternal, IListener, MethodsMap, StoreActions, UseStoreReturn, IStore } from "./types";
+import { DeepReadonly, DeepPartial } from "utility-types";
+import equal from "fast-deep-equal";
 
-function setState<S, A>(store: IStore<S, A>, newState: Partial<S>) {
+function setState<S, A>(store: IStoreInternal<S, A>, newState: DeepPartial<S>) {
   store.state = { ...store.state, ...newState };
   store.listeners.forEach((listener) => {
     listener.run(store.state);
@@ -10,7 +11,7 @@ function setState<S, A>(store: IStore<S, A>, newState: Partial<S>) {
 }
 
 function useStore<S, A>(
-  store: IStore<S, A>,
+  store: IStoreInternal<S, A>,
   mapState: (state: DeepReadonly<S>) => any,
   mapActions: (actions: A) => any) {
   const state = mapState ? mapState(store.state) : store.state;
@@ -22,21 +23,21 @@ function useStore<S, A>(
   const [, originalHook] = useState(state);
 
   useEffect(() => {
-    const newListener: IListener<S> = { oldState: state } as IListener<S>;
-    newListener.run = mapState
+    const listner: IListener<S> = { oldState: state } as IListener<S>;
+    listner.run = mapState
       ? (newState) => {
         const mappedState = mapState(newState);
-        if (mappedState !== newListener.oldState) {
-          newListener.oldState = mappedState;
+        if (!equal(mappedState, listner.oldState)) {
+          listner.oldState = mappedState;
           originalHook(mappedState);
         }
       }
       : originalHook;
-    store.listeners.push(newListener);
+    store.listeners.push(listner);
 
     return () => {
       store.listeners = store.listeners.filter(
-        (listener) => listener !== newListener,
+        (l) => l !== listner,
       );
     };
   }, []);
@@ -44,12 +45,12 @@ function useStore<S, A>(
   return [state, actions];
 }
 
-function associateActions<S, A extends MethodsMap<A>>(store: IStore<S, A>, actions: StoreActions<S, A>) {
+function associateActions<S, A extends MethodsMap<A>>(store: IStoreInternal<S, A>, actions: StoreActions<S, A>) {
   const result: MethodsMap<any> = {};
 
   Object.keys(actions).forEach((key) => {
     if (typeof actions[key as keyof A] === "function") {
-      const action = actions[key as keyof A] as (store: IStore<S, A>, ...p: any) => any;
+      const action = actions[key as keyof A] as (store: IStoreInternal<S, A>, ...p: any) => any;
       result[key] = action.bind(null, store);
     }
     if (typeof actions[key as keyof A] === "object") {
@@ -63,10 +64,10 @@ export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions
   if (typeof initialState !== "object") {
     throw new Error("Only objects are supported as state, e.g. { counter: 0 }");
   }
-  const store: IStore<S, A> = {
+  const store: IStoreInternal<S, A> = {
     state: initialState,
     listeners: [],
-  } as IStore<S, A>;
+  } as IStoreInternal<S, A>;
 
   store.setState = setState.bind(null, store);
   store.actions = associateActions(store, actions);

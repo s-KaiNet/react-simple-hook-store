@@ -1,4 +1,4 @@
-import { DeepReadonly } from "utility-types";
+import { DeepReadonly, DeepPartial } from "utility-types";
 
 export interface IListener<T> {
     oldState: Partial<T>;
@@ -7,8 +7,11 @@ export interface IListener<T> {
 
 export interface IStore<S, A> {
     state: DeepReadonly<S>;
-    setState: (newState: Partial<S>) => void;
+    setState: (newState: DeepPartial<S>) => void;
     actions: A;
+}
+
+export interface IStoreInternal<S, A> extends IStore<S, A> {
     listeners: Array<IListener<S>>;
 }
 
