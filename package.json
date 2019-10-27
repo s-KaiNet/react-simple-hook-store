@@ -2,7 +2,8 @@
   "name": "react-simple-hook-store",
   "version": "0.0.1",
   "description": "Implements store for React using hooks. No Redux, no mobx, no React Context Api.",
-  "main": "index.js",
+  "main": "dist/react-simple-hook-store.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -10,7 +11,8 @@
     "build": "webpack --progress --config ./webpack/webpack.prod.js",
     "start": "webpack-dev-server --config ./webpack/webpack.dev.js",
     "lint": "npx tslint --project tsconfig.json -c tslint.json",
-    "prepublishOnly": "npm run build"
+    "declarations": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "prepublishOnly": "npm run build && npm run declarations"
   },
   "repository": {
     "type": "git",
