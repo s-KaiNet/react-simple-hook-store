@@ -91,7 +91,7 @@ describe("store", () => {
                 counter: 0,
             },
             otherState: {
-                counter:  0,
+                counter: 0,
             },
         };
 
@@ -104,5 +104,32 @@ describe("store", () => {
         });
 
         expect(0).toStrictEqual(store.state.otherState.counter);
+    });
+
+    it("Should update state with async action method", async () => {
+        const initial = {
+            counter: 0,
+        };
+
+        interface IActions {
+            set(value: number): Promise<void>;
+        }
+
+        const { store } = createStore<typeof initial, IActions>(initial, {
+            set: async (s, value) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        s.setState({
+                            counter: value,
+                        });
+                        resolve();
+                    }, 100);
+                });
+            },
+        });
+
+        await store.actions.set(2);
+
+        expect(2).toStrictEqual(store.state.counter);
     });
 });
