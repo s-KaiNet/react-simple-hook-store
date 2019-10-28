@@ -53,16 +53,16 @@ const { useStore } = createStore<IState, IActions>({
         });
 ```
 
-Use it inside components:  
+`createStore` returns React hook, which you should use in your components:  
 
 ```typescript
 const Component = () => {
-            const [counter, increment] = useStore((s) => s.counter, (a) => a.increment);
+    const [counter, increment] = useStore((s) => s.counter, (a) => a.increment);
 
-            return (
-                <button onClick={() => increment()}>
-                    {counter}
-                </button>
-            );
-        };
+    return (
+        <button onClick={() => increment()}>
+            {counter}
+        </button>
+    );
+};
 ```
