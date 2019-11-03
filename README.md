@@ -4,14 +4,15 @@
 
 No Redux, no Mobx, no React Context API, just React hooks. It means React 16.8+ required and you can use it only with functional components.  
 
-The project is heavily based on the [State Management with React Hooks — No Redux or Context API](https://medium.com/javascript-in-plain-english/state-management-with-react-hooks-no-redux-or-context-api-8b3035ceecf8) article and corresponding npm module. This project fixes some issues, adds new features and written in TypeScript.
+The project is heavily based on the [State Management with React Hooks — No Redux or Context API](https://medium.com/javascript-in-plain-english/state-management-with-react-hooks-no-redux-or-context-api-8b3035ceecf8) article and corresponding npm module. This project fixes some issues, adds tests, new features and written in TypeScript.
 
-## Table of contents <!-- omit in toc -->
+<details>
+<summary>Table of contents</summary>
 
 - [The idea](#the-idea)
 - [Installation](#installation)
 - [Usage](#usage)
-- [More examples:](#more-examples)
+- [More examples](#more-examples)
   - [Basic usage](#basic-usage)
   - [Async actions](#async-actions)
   - [Multiple stores](#multiple-stores)
@@ -27,11 +28,11 @@ The project is heavily based on the [State Management with React Hooks — No Re
   - [`store` object](#store-object)
   - [`batchUpdates`](#batchupdates)
 
-----
+</details>
 
 ## The idea
 
-Your state is readonly and immutable. The only way to update the state from a component's code is through actions. If you want to update the state from outside a component, you can use store's `setState` method. All updates to the state should be immutable (the same way as you do for React's `setState` in class based components). You should define the structure of your state, your actions and start using them in your components.
+Your state is readonly and immutable. The only way to update the state from a component's code is through actions. If you want to update the state from outside a component, you can use store's `setState` method. All updates to the state should be immutable (the same way as you do it for React's `setState` in class based components). You should define the structure of your state, your actions and start using them in your components.
 
 ## Installation
 
@@ -57,7 +58,7 @@ interface IActions {
 }
 ```
 
-Create store. It accepts an initial state value as the first argument and your actions as the second. 
+Create store. It accepts an initial state value as the first argument and your actions as the second.
 
 ```typescript
 import { createStore } from "react-simple-hook-store";
@@ -73,7 +74,7 @@ const { useStore, store } = createStore<IState, IActions>({
         });
 ```
 
-`createStore` returns React hook, which you should use in your components. It accepts a map function, which returns subset of the whole state. If you want just full state, simply omit this parameter. The second param is actions map function. The same was as for state, if you want all actions, omit this parameter.   
+`createStore` returns React hook called `useStore`, which you should use in your components. It accepts a map function, which returns subset of the whole state. The second param is actions map function. If you want all actions to be returned, omit this parameter.
 
 ```typescript
 const Component = () => {
@@ -87,11 +88,11 @@ const Component = () => {
 };
 ```
 
-`counter` will be your "local state" here. Every time other components (or current component) update counter state variable, the component will get re-rendered. Another way to read it: any updates to `counter` state will cause this component to be re-rendered.
+`counter` will be your "local state" here. Every time other components (or current component) update `counter` state variable, the component will get re-rendered. Another way to read it: any updates to `counter` global state will cause this component to be re-rendered.
 
-If you want to modify the state outside of React, you can use `store` exported on the previous step.
+If you want to modify the state outside of React component, you can use `store` exported on the previous step.
 
-## More examples:
+## More examples
 
 ### [Basic usage](https://codesandbox.io/s/basic-usage-n9ib6)
 
@@ -103,7 +104,7 @@ You can have async actions inside your store
 
 ### Multiple stores
 
-You can have as many stores as your application requires it. There are two ways to handle it - either use "namespaces" or simply create separate stores (if your stores are completely unrelated)
+You can have as many stores as your application needs. There are two ways to handle it - either use "namespaces" or simply create separate stores (if your stores are completely unrelated)
 
 - [Separate stores](https://codesandbox.io/s/multiple-stores-separate-stores-3fyox)
 - ["namespaced" stores](https://codesandbox.io/s/multiple-stores-namespaces-opii9)
@@ -114,15 +115,15 @@ You can have as many stores as your application requires it. There are two ways 
 
 ### [Todo App](https://codesandbox.io/s/todo-app-x0rhd)
 
-This sample showcases full Todo App. The store contains all todo items array and filter state. You don't necessarily need global state for your todos, but just for the demo purposes it's ok. It demonstrates how to update state correctly (immutably, including arrays).
+This sample showcases full Todo App. The store contains all todo items as an array and filter state. You don't necessarily need global state for your todos, but just for the demo purposes it's ok. It demonstrates how to update state correctly (immutably, including arrays).
 
 ## API
 
 ### `createStore<IStore, IActions>(initialState, actions)`
 
-Creates a store. 
+Creates a store.
 
-#### Arguments 
+#### Arguments
 
 - `initialState`: `object`, the initial state, supports multilevel, i.e.
   
@@ -159,17 +160,17 @@ Creates a store.
 
 #### Return value
 
-Object with below properties (more on every property below):
+Object with properties (more on every property below):
 
 - `useStore` - React hook to be used inside React functional components
-- `store` - store instance, might be useful outside of React functional components
-- `batchUpdates` - function wrapper to batch multiple setState to reduce the number of re-renders. For advanced performance tunning, in most cases you don't need it. More info below
+- `store` - store instance, might be useful outside of React components
+- `batchUpdates` - function wrapper to batch multiple setState to reduce the number of re-renders. For advanced performance tunning, in most cases you don't need it. More info below.
 
 ### `useStore(mapState, mapActions)`
 
 #### Arguments
 
-- `mapState`: a function, which returns a subset of the original state. When omitted, `undefined` will be returned.
+- `mapState`: a function, which returns a subset of the original state. When omitted, `undefined` will be returned. Current component will be re-rendered only if the result of `mapState` will be changed.
 - `mapActions`: a function, which returns a subset of actions. When omitted, all actions will be returned
 
 #### Return value
@@ -193,4 +194,4 @@ Methods:
 ### `batchUpdates`
 
 A function, which accepts a callback. Inside that callback you can as many `store.setState` as you wish. This will cause only one render inside React components.  
-When it might be useful? If you perform multiple state updates as a result of async function (or as a result of timeout function). React will re-render your component as a result of **every** call to `setState`. More info in this React [issue](https://github.com/facebook/react/issues/14259). 
+When it might be useful? If you perform multiple state updates as a result of async function (or as a result of timeout function). React will re-render your component as a result of **every** call to `setState`. More info in this React [issue](https://github.com/facebook/react/issues/14259).
