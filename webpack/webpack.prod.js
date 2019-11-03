@@ -15,8 +15,8 @@ module.exports = {
   },
   mode: 'production',
   externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
+    "react": "react",
+    "react-dom": "reactDOM"
   },
   module: {
     rules: [

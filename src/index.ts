@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { IStoreInternal, IListener, MethodsMap, StoreActions, UseStoreReturn, IStore } from "./types";
+import { IStoreInternal, IListener, MethodsMap, StoreActions, UseStoreReturn } from "./types";
 import { DeepReadonly, DeepPartial } from "utility-types";
 import equal from "fast-deep-equal";
 
@@ -13,12 +13,16 @@ function setState<S, A>(store: IStoreInternal<S, A>, newState: DeepPartial<S>) {
 function useStore<S, A>(
   store: IStoreInternal<S, A>,
   mapState: (state: DeepReadonly<S>) => any,
-  mapActions: (actions: A) => any) {
-  const state = mapState ? mapState(store.state) : store.state;
+  mapActions?: (actions: A) => any) {
   const actions = useMemo(
     () => (mapActions ? mapActions(store.actions) : store.actions),
     [mapActions, store.actions],
   );
+
+  if (!mapState) {
+    return [undefined, actions];
+  }
+  const state = mapState(store.state);
 
   const [, originalHook] = useState(state);
 

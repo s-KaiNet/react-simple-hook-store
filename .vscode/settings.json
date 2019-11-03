@@ -2,5 +2,6 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
       },
-      "emmet.showExpandedAbbreviation": "never"
+      "emmet.showExpandedAbbreviation": "never",
+      "markdown.extension.toc.githubCompatibility": true
 }

@@ -29,7 +29,7 @@ export type MethodsMap<A> = {
     : (...payload: any) => void
 };
 
-export type UseStoreReturn<S, A> = (() => [S, A]) &
+export type UseStoreReturn<S, A> = (() => [undefined, A]) &
     (<NS>(stateFunc: (state: S) => NS) => [NS, A]) &
-    (<NA>(stateFunc: undefined, actionsFunc: (actions: A) => NA) => [S, NA]) &
+    (<NA>(stateFunc: undefined, actionsFunc: (actions: A) => NA) => [undefined, NA]) &
     (<NS, NA>(stateFunc: (state: S) => NS, actionsFunc: (actions: A) => NA) => [NS, NA]);

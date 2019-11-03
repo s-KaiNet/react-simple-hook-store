@@ -64,7 +64,7 @@ describe("useStore", () => {
         }, {} as any);
 
         const Component = () => {
-            const [state] = useStore();
+            const [state] = useStore((s) => s);
 
             return (
                 <div>{state.counter}</div>
@@ -75,6 +75,28 @@ describe("useStore", () => {
 
         requestAnimationFrame(() => {
             expect(rendered.text()).toBe("1");
+            done();
+        });
+    });
+
+    it("Should return undefined as state object", (done) => {
+
+        const { useStore } = createStore<IState, IActions>({
+            counter: 1,
+        }, {} as any);
+
+        const Component = () => {
+            const [state] = useStore();
+            const toRender = typeof state === "undefined";
+            return (
+                <div>{toRender.toString()}</div>
+            );
+        };
+
+        const rendered = mount(<Component />);
+
+        requestAnimationFrame(() => {
+            expect(rendered.text()).toBe("true");
             done();
         });
     });
@@ -149,10 +171,10 @@ describe("useStore", () => {
 
         const Component = () => {
             const [state, increment] = useStore(undefined, (a) => a.increment);
-
+            const toRender = typeof state === "undefined";
             return (
                 <button onClick={() => increment()}>
-                    {state.counter}
+                    {toRender.toString()}
                 </button>
             );
         };
@@ -160,11 +182,9 @@ describe("useStore", () => {
         const rendered = mount(<Component />);
 
         requestAnimationFrame(() => {
-            expect(rendered.text()).toBe("0");
+            expect(rendered.text()).toBe("true");
             rendered.find("button").simulate("click");
-            expect(rendered.text()).toBe("1");
-            rendered.find("button").simulate("click");
-            expect(rendered.text()).toBe("2");
+            expect(rendered.text()).toBe("true");
             done();
         });
     });
@@ -274,7 +294,7 @@ describe("useStore", () => {
         });
 
         const Component = () => {
-            const [globalState, appStateActions] = useStore(undefined, (a) => a.appStateActions);
+            const [globalState, appStateActions] = useStore((s) => s, (a) => a.appStateActions);
 
             return (
                 <>
@@ -391,7 +411,7 @@ describe("useStore", () => {
         });
 
         const Component = () => {
-            const [state, increment] = useStore(undefined, (a) => a.increment);
+            const [state, increment] = useStore((s) => s, (a) => a.increment);
 
             return (
                 <button onClick={async () => increment()}>
