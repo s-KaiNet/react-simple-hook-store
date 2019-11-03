@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/react-simple-hook-store.svg)](https://badge.fury.io/js/react-simple-hook-store)  
 
-No Redux, no Mobx, no React Context API, just React hooks. It means React 16.8+ required and you can use it only with functional components.  
+No Redux, no Mobx, no React Context API, just React hooks. React 16.8+ required.  
 
 The project is heavily based on the [State Management with React Hooks — No Redux or Context API](https://medium.com/javascript-in-plain-english/state-management-with-react-hooks-no-redux-or-context-api-8b3035ceecf8) article and corresponding npm module. This project fixes some issues, adds tests, new features and written in TypeScript.
 
