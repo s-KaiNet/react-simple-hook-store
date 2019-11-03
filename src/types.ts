@@ -13,6 +13,7 @@ export interface IStore<S, A> {
 
 export interface IStoreInternal<S, A> extends IStore<S, A> {
     listeners: Array<IListener<S>>;
+    inBatch: boolean;
 }
 
 export type StoreActions<S, A> = {

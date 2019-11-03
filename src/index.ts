@@ -5,9 +5,27 @@ import equal from "fast-deep-equal";
 
 function setState<S, A>(store: IStoreInternal<S, A>, newState: DeepPartial<S>) {
   store.state = { ...store.state, ...newState };
+  if (!store.inBatch) {
+    store.listeners.forEach((listener) => {
+      listener.run(store.state);
+    });
+  }
+}
+
+function runListeners<S, A>(store: IStoreInternal<S, A>) {
   store.listeners.forEach((listener) => {
     listener.run(store.state);
   });
+}
+
+function batchUpdates<S, A>(store: IStoreInternal<S, A>, callback: () => void) {
+  try {
+    store.inBatch = true;
+    callback();
+    runListeners(store);
+  } finally {
+    store.inBatch = false;
+  }
 }
 
 function useStore<S, A>(
@@ -78,6 +96,7 @@ export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions
 
   return {
     useStore: useStore.bind(null, store) as UseStoreReturn<S, A>,
+    batchUpdates: batchUpdates.bind(null, store) as (callback: () => void) => void,
     store,
   };
 };

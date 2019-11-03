@@ -100,7 +100,7 @@ You can have as many stores as your application requires it. There are two ways 
 - [Separate stores](https://codesandbox.io/s/multiple-stores-separate-stores-3fyox)
 - ["namespaced" stores](https://codesandbox.io/s/multiple-stores-namespaces-opii9)
 
-### [Different ways to access your store from components](https://codesandbox.io/s/ways-to-access-store-from-components-583e0)
+### [Different ways to access your store from components](https://codesandbox.io/s/ways-to-access-store-from-components-b67tu)
 
 `useStore` hook has several overloads which might be useful in different situations.
 
@@ -110,4 +110,3 @@ This sample showcases full Todo App. The store contains all todo items array and
 
 ## API
 
-API
