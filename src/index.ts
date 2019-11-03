@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { IStoreInternal, IListener, MethodsMap, StoreActions, UseStoreReturn } from "./types";
+import { IStoreInternal, IListener, MethodsMap, StoreActions, UseStoreReturn, IStore } from "./types";
 import { DeepReadonly, DeepPartial } from "utility-types";
 import equal from "fast-deep-equal";
 
@@ -97,7 +97,7 @@ export const createStore = <S, A extends MethodsMap<A>>(initialState: S, actions
   return {
     useStore: useStore.bind(null, store) as UseStoreReturn<S, A>,
     batchUpdates: batchUpdates.bind(null, store) as (callback: () => void) => void,
-    store,
+    store: store as IStore<S, A>,
   };
 };
 

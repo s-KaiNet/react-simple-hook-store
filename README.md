@@ -18,6 +18,14 @@ The project is heavily based on the [State Management with React Hooks — No Re
   - [Different ways to access your store from components](#different-ways-to-access-your-store-from-components)
   - [Todo App](#todo-app)
 - [API](#api)
+  - [`createStore<IStore, IActions>(initialState, actions)`](#createstoreistore-iactionsinitialstate-actions)
+    - [Arguments](#arguments)
+    - [Return value](#return-value)
+  - [`useStore(mapState, mapActions)`](#usestoremapstate-mapactions)
+    - [Arguments](#arguments-1)
+    - [Return value](#return-value-1)
+  - [`store` object](#store-object)
+  - [`batchUpdates`](#batchupdates)
 
 ----
 
@@ -110,3 +118,79 @@ This sample showcases full Todo App. The store contains all todo items array and
 
 ## API
 
+### `createStore<IStore, IActions>(initialState, actions)`
+
+Creates a store. 
+
+#### Arguments 
+
+- `initialState`: `object`, the initial state, supports multilevel, i.e.
+  
+  ```typescript
+  {
+      appState: {
+          value: "myvalue"
+      },
+      navigation: {
+          active: "node1"
+      }
+  }
+  ```
+
+- `actions`: `StoreActions<IState, IActions>` actions map. You use actions to modify state from components. For example:
+  
+  ```typescript
+    interface IState {
+        counter: number;
+    }
+
+    interface IActions {
+        increment: () => void;
+    }
+
+    const actions: StoreActions<IState, IActions> = {
+        increment: store => {
+                store.setState({
+                counter: store.state.counter + 1
+            });
+        }
+    }
+  ```
+
+#### Return value
+
+Object with below properties (more on every property below):
+
+- `useStore` - React hook to be used inside React functional components
+- `store` - store instance, might be useful outside of React functional components
+- `batchUpdates` - function wrapper to batch multiple setState to reduce the number of re-renders. For advanced performance tunning, in most cases you don't need it. More info below
+
+### `useStore(mapState, mapActions)`
+
+#### Arguments
+
+- `mapState`: a function, which returns a subset of the original state. When omitted, `undefined` will be returned.
+- `mapActions`: a function, which returns a subset of actions. When omitted, all actions will be returned
+
+#### Return value
+
+An array with two values:
+
+- [0]: the result of `mapState` function, or `undefined` if `mapState` is `undefined`.
+- [1]: the result of `mapActions` function or all actions if `mapActions` is `undefined`
+
+### `store` object
+
+Properties:
+
+- `state` - readonly state object
+- `actions` - all store actions
+
+Methods:
+
+- `setState` - a function which accepts subset of original state to modify the state. Works the same way as React's `setState` in class based components, i.e. merges provided value with original state.
+
+### `batchUpdates`
+
+A function, which accepts a callback. Inside that callback you can as many `store.setState` as you wish. This will cause only one render inside React components.  
+When it might be useful? If you perform multiple state updates as a result of async function (or as a result of timeout function). React will re-render your component as a result of **every** call to `setState`. More info in this React [issue](https://github.com/facebook/react/issues/14259). 

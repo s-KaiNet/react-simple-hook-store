@@ -358,7 +358,7 @@ describe("useStore", () => {
         requestAnimationFrame(() => {
             expect(rendered.text()).toBe("0");
             rendered.unmount();
-            expect(store.listeners.length).toBe(0);
+            expect((store as any).listeners.length).toBe(0);
             done();
         });
     });

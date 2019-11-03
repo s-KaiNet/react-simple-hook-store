@@ -1,6 +1,6 @@
 {
   "name": "react-simple-hook-store",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Implements state management for React using hooks. No Redux, no Mobx, no React Context Api, just React hooks",
   "main": "dist/react-simple-hook-store.js",
   "types": "dist/index.d.ts",
