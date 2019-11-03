@@ -193,5 +193,5 @@ Methods:
 
 ### `batchUpdates`
 
-A function, which accepts a callback. Inside that callback you can as many `store.setState` as you wish. This will cause only one render inside React components.  
-When it might be useful? If you perform multiple state updates as a result of async function (or as a result of timeout function). React will re-render your component as a result of **every** call to `setState`. More info in this React [issue](https://github.com/facebook/react/issues/14259).
+A function, which accepts a callback. Inside that callback you can use as many `store.setState` as you wish. This will cause only one render inside React components.  
+When it might be useful? If you perform multiple state updates as a result of async function (or as a result of timeout function). By default React will re-render your component as a result of **every** call to `setState`. More info in this React [issue](https://github.com/facebook/react/issues/14259).
