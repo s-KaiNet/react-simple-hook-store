@@ -1,11 +1,10 @@
-// tslint:disable: jsx-no-lambda
 import React from "react";
 import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
 
 import { createStore, StoreActions } from "../src";
 
-// tslint:disable-next-line: no-console
+// eslint-disable-next-line no-console
 const consoleError = console.error;
 beforeAll(() => {
     jest.spyOn(console, "error").mockImplementation((...args) => {

@@ -1,13 +1,22 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const path = require('path');
 
 module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
-  mode: 'development',
-  devtool: "inline-source-map",
-  entry: './example/index.tsx',
+  entry: './src/index.ts',
+  output: {
+    filename: 'react-simple-hook-store.js',
+    path: path.resolve(__dirname, '../dist'),
+    library: 'simpleHookStore',
+    libraryTarget: 'umd',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
+  },
+  mode: 'production',
+  externals: {
+    "react": "react",
+    "react-dom": "reactDOM"
+  },
   module: {
     rules: [
       {
@@ -35,12 +44,5 @@ module.exports = {
         exclude: /node_modules/
       },
     ]
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './example/index.html'
-    }),
-    new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true })
-  ]
+  }
 };

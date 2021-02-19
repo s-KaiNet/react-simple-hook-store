@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { DeepReadonly, DeepPartial } from "utility-types";
 
 export interface IListener<T> {
